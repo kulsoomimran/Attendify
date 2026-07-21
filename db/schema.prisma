@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String
+  email           String           @unique
+  emailVerified   Boolean          @default(false)
+  image           String?
+  role            Role             @default(EMPLOYEE)
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  organizationId  String?
+  accounts        Account[]
+  employeeProfile EmployeeProfile?
+  sessions        Session[]
+  organization    Organization?    @relation(fields: [organizationId], references: [id])
+
+  @@index([email])
+  @@index([organizationId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model EmployeeProfile {
+  id             String              @id @default(cuid())
+  userId         String              @unique
+  department     String?
+  shiftId        String?
+  isRemote       Boolean             @default(false)
+  attendances    AttendanceLog[]
+  analyticsLogs  EmployeeAnalytics[]
+  shift          Shift?              @relation(fields: [shiftId], references: [id])
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaveRequests  LeaveRequest[]
+  payrollProfile PayrollProfile?
+
+  @@index([userId])
+  @@index([shiftId])
+}
+
+model OfficeSetting {
+  id           String   @id @default(cuid())
+  name         String   @default("HQ Office")
+  latitude     Float    @default(37.7749)
+  longitude    Float    @default(-122.4194)
+  radiusMeters Int      @default(200)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Shift {
+  id          String            @id @default(cuid())
+  name        String
+  startTime   String
+  endTime     String
+  gracePeriod Int               @default(15)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  employees   EmployeeProfile[]
+}
+
+model AttendanceLog {
+  id           String           @id @default(cuid())
+  employeeId   String
+  date         DateTime
+  clockIn      DateTime
+  clockOut     DateTime?
+  workingHours Float?
+  lateMinutes  Int              @default(0)
+  status       AttendanceStatus @default(PRESENT)
+  latitudeIn   Float?
+  longitudeIn  Float?
+  latitudeOut  Float?
+  longitudeOut Float?
+  notes        String?          @db.VarChar(500)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  employee     EmployeeProfile  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, date])
+  @@index([employeeId])
+  @@index([date])
+}
+
+model LeaveRequest {
+  id           String          @id @default(cuid())
+  employeeId   String
+  type         LeaveType
+  status       LeaveStatus     @default(PENDING)
+  startDate    DateTime
+  endDate      DateTime
+  reason       String?         @db.VarChar(1000)
+  approvedById String?
+  reviewedAt   DateTime?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  employee     EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+}
+
+model Holiday {
+  id          String   @id @default(cuid())
+  name        String
+  date        DateTime @unique
+  description String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([date])
+}
+
+model PayrollProfile {
+  id           String          @id @default(cuid())
+  employeeId   String          @unique
+  baseSalary   Decimal         @db.Decimal(12, 2)
+  currency     String          @default("USD") @db.VarChar(3)
+  paymentCycle String          @default("MONTHLY")
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  employee     EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  records      PayrollRecord[]
+}
+
+model PayrollRecord {
+  id               String         @id @default(cuid())
+  payrollProfileId String
+  periodStart      DateTime
+  periodEnd        DateTime
+  grossPay         Decimal        @db.Decimal(12, 2)
+  deductions       Decimal        @default(0.00) @db.Decimal(12, 2)
+  netPay           Decimal        @db.Decimal(12, 2)
+  status           String         @default("PENDING")
+  processedAt      DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  profile          PayrollProfile @relation(fields: [payrollProfileId], references: [id], onDelete: Cascade)
+
+  @@index([payrollProfileId])
+}
+
+model EmployeeAnalytics {
+  id               String          @id @default(cuid())
+  employeeId       String
+  month            Int
+  year             Int
+  totalPresentDays Int             @default(0)
+  totalAbsentDays  Int             @default(0)
+  totalLateDays    Int             @default(0)
+  totalHoursWorked Float           @default(0.0)
+  updatedAt        DateTime        @updatedAt
+  employee         EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, month, year])
+  @@index([employeeId])
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  HALFDAY
+  LEAVE
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  ANNUAL
+  MATERNITY
+  UNPAID
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
