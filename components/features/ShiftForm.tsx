@@ -196,7 +196,7 @@ export default function ShiftForm({
               />
             </div>
             <p className="text-[10px] text-secondary mt-1 font-normal">
-              Employees can check in late up to this many minutes without being marked "LATE".
+              Employees can check in late up to this many minutes without being marked &quot;LATE&quot;.
             </p>
           </div>
 

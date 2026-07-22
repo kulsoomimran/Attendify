@@ -62,7 +62,7 @@ export default function EmployeesPage() {
         setErrorMsg(result.error || "Failed to load employee directory");
       }
     } catch (error) {
-      setErrorMsg("A network error occurred while fetching employees");
+      setErrorMsg(`A network error occurred while fetching employees ${error}`);
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +104,7 @@ export default function EmployeesPage() {
 
   // Quick calculations for dashboard summary cards
   const totalEmployeesCount = pagination.total;
-  const activeEmployeesCount = employees.filter(emp => emp.isActive).length; // Active count from current page, or dynamic
+  // const activeEmployeesCount = employees.filter(emp => emp.isActive).length; // Active count from current page, or dynamic
 
   return (
     <div className="flex flex-col space-y-6" id="employees-page-root">
@@ -172,7 +172,7 @@ export default function EmployeesPage() {
       )}
 
       {/* Main Directory Table Canvas */}
-      <div className="relative min-h-[300px]">
+      <div className="relative min-h-75">
         {isLoading && employees.length === 0 ? (
           <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded-xl" id="table-loading-state">
             <div className="flex flex-col items-center gap-2">

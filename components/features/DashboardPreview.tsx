@@ -2,8 +2,8 @@ import { AlertCircle, ArrowUpRight, Calendar, CheckCircle, Clock, TrendingUp } f
 
 export default function DashboardPreview() {
   return (
-    <div className="relative w-full overflow-hidden rounded-[24px] border border-border/80 bg-gradient-to-br from-white via-[#f8faf2] to-[#eef4e6] shadow-[0_32px_80px_-28px_rgba(29,29,29,0.24)]" id="dashboard-preview-card">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(168,181,160,0.16),_transparent_42%)]" />
+    <div className="relative w-full overflow-hidden rounded-3xl border border-border/80 bg-linear-to-br from-white via-[#f8faf2] to-[#eef4e6] shadow-[0_32px_80px_-28px_rgba(29,29,29,0.24)]" id="dashboard-preview-card">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,181,160,0.16),transparent_42%)]" />
 
       <div className="relative">
         <div className="flex items-center gap-2 border-b border-border/80 bg-background/70 px-4 py-3">
@@ -17,7 +17,7 @@ export default function DashboardPreview() {
           </div>
         </div>
 
-        <div className="grid min-h-[480px] grid-cols-1 md:grid-cols-[220px_1fr]">
+        <div className="grid min-h-120 grid-cols-1 md:grid-cols-[220px_1fr]">
           <div className="hidden flex-col space-y-6 border-r border-border/80 bg-background/40 p-4 md:flex">
             <div className="flex items-center gap-2 px-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-accent-sage">

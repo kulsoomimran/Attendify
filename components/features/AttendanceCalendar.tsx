@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AttendanceStatus } from "@prisma/client";
-import { ChevronLeft, ChevronRight, HelpCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface AttendanceCalendarProps {
   logs: any[];

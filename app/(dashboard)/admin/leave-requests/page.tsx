@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { RefreshCw, Inbox, ShieldAlert } from "lucide-react";
+import { RefreshCw, Inbox } from "lucide-react";
 import AdminReviewCard from "@/components/features/AdminReviewCard";
 import { LeaveStatus } from "@prisma/client";
 
@@ -23,7 +23,7 @@ export default function AdminLeaveRequestsPage() {
         setErrorMsg(result.error || "Failed to load leave requests.");
       }
     } catch (err) {
-      setErrorMsg("A network error occurred while updating the requests.");
+      setErrorMsg(`A network error occurred while updating the requests. ${err}`);
     } finally {
       setIsLoading(false);
     }

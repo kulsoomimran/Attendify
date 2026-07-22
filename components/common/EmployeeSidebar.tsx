@@ -31,7 +31,7 @@ export default function EmployeeSidebar() {
   return (
     <>
       {/* Mobile Toggle Button — always visible, above everything */}
-      <div className="md:hidden fixed top-4 left-4 z-[60]">
+      <div className="md:hidden fixed top-4 left-4 z-60">
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className="p-2.5 rounded-xl bg-card border border-border shadow-soft text-foreground hover:bg-background transition-colors duration-200"
@@ -44,7 +44,7 @@ export default function EmployeeSidebar() {
 
       {/* Mobile Sidebar overlay — tap outside to close; always rendered for smooth animation */}
       <div
-        className={`md:hidden fixed inset-0 bg-primary/20 backdrop-blur-sm z-[50] transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 bg-primary/20 backdrop-blur-sm z-50 transition-opacity duration-300 ${
           isMobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMobileOpen(false)}
@@ -53,7 +53,7 @@ export default function EmployeeSidebar() {
 
       {/* Main Sidebar Shell */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 bg-card border-r border-border flex flex-col z-[55] transition-transform duration-300 ease-in-out overflow-y-auto
+        className={`fixed top-0 bottom-0 left-0 bg-card border-r border-border flex flex-col z-55 transition-transform duration-300 ease-in-out overflow-y-auto
           ${isCollapsed ? "md:w-20" : "md:w-64"} w-64
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}

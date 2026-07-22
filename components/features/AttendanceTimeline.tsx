@@ -164,7 +164,7 @@ export default function AttendanceTimeline({ logs }: AttendanceTimelineProps) {
                         {log.notes && (
                           <div className="text-[11px] bg-background border border-border rounded-lg p-2.5 mt-1.5 flex items-start gap-1.5 w-full font-normal text-secondary">
                             <FileText className="w-3.5 h-3.5 text-secondary shrink-0 mt-0.5" />
-                            <span className="break-words min-w-0">{log.notes}</span>
+                            <span className="wrap-break-word min-w-0">{log.notes}</span>
                           </div>
                         )}
                       </div>

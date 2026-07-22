@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatDate } from "@/lib/date-utils";
-import { Check, X, Loader2, Calendar, FileText, User } from "lucide-react";
+import { Check, X, Loader2, FileText, User } from "lucide-react";
 import { LeaveStatus } from "@prisma/client";
 import { reviewLeaveRequestAction } from "@/server/actions/leave-actions";
 
